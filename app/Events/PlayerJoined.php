@@ -12,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PlayerVoted implements ShouldBroadcast
+class PlayerJoined implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,9 +21,10 @@ class PlayerVoted implements ShouldBroadcast
      */
     public function __construct(
         public readonly User $user,
-        public readonly int $vote
     ) {
-        //
+        $users = cache()->get('room:players', []);
+        $users[] = $user->name;
+        cache()->put('room:players', $users);
     }
 
     /**
